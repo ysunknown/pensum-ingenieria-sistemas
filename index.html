@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pénsum Ingeniería de Sistemas — UNEXPO</title>
+  <meta name="description" content="Seguimiento visual del pénsum de Ingeniería de Sistemas (UNEXPO, 2018): materias aprobadas, cursando, por cursar y disponibles, con selección de electivas." />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div>
+        <h1>Pénsum de Ingeniería de Sistemas</h1>
+        <p class="subtitle">UNEXPO · Vice-Rectorado Luis Caballero Mejías · Diciembre 2018</p>
+      </div>
+      <div class="counters">
+        <div class="counter counter-aprobadas">
+          <span class="counter-value" id="total-uc-aprobadas">0</span>
+          <span class="counter-label">TOTAL U.C. APROBADAS</span>
+        </div>
+        <div class="counter counter-cursando">
+          <span class="counter-value" id="total-uc-cursando">0</span>
+          <span class="counter-label">U.C. CURSANDO ESTE SEMESTRE</span>
+        </div>
+        <button id="btn-reset" class="btn-reset" type="button">Reiniciar progreso</button>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="legend-item"><i class="swatch swatch-aprobada"></i> Aprobada</span>
+      <span class="legend-item"><i class="swatch swatch-cursando"></i> Cursando</span>
+      <span class="legend-item"><i class="swatch swatch-porcursar"></i> Por cursar</span>
+      <span class="legend-item"><i class="swatch swatch-disponible"></i> Puede cursarse (requisitos cumplidos)</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="semestres-section">
+      <div id="semestres" class="grid-cards"></div>
+    </section>
+
+    <section class="electivas-section">
+      <h2 class="section-title">Catálogo de electivas por especialidad</h2>
+      <div id="electivas-catalogos" class="grid-cards"></div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Tu progreso se guarda automáticamente en este navegador (localStorage). No se envía a ningún servidor.</p>
+  </footer>
+
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <h3 id="modal-title">Elegir electiva</h3>
+        <button id="modal-close" class="modal-close" type="button" aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
