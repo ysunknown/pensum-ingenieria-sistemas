@@ -19,6 +19,8 @@ const App = (() => {
   const modalTitle = document.getElementById('modal-title');
   const modalClose = document.getElementById('modal-close');
 
+  let lastFocusedBeforeModal = null;
+
   function init() {
     state = loadState();
     wireStaticEvents();
@@ -31,7 +33,12 @@ const App = (() => {
       if (e.target === modalOverlay) closeModal();
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !modalOverlay.classList.contains('hidden')) closeModal();
+      if (modalOverlay.classList.contains('hidden')) return;
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'Tab') {
+        trapModalFocus(e);
+      }
     });
     elResetBtn.addEventListener('click', () => {
       if (confirm('¿Reiniciar todo el progreso guardado? Esta acción no se puede deshacer.')) {
@@ -39,6 +46,24 @@ const App = (() => {
         renderAll();
       }
     });
+  }
+
+  // Mantiene el foco de teclado dentro del modal mientras está abierto,
+  // para que Tab/Shift+Tab no se escapen hacia la página de fondo.
+  function trapModalFocus(e) {
+    const focusable = modalOverlay.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   }
 
   function renderAll() {
@@ -333,6 +358,8 @@ const App = (() => {
   // ---------- Modal de selección de electiva ----------
 
   function openElectiveModal(slotId, semLabel) {
+    lastFocusedBeforeModal = document.activeElement;
+
     const ctx = buildContext(state.status, index, state.slots);
     const occupied = occupiedElectiveCodes(state, slotId);
     const currentCode = state.slots[slotId];
@@ -353,6 +380,16 @@ const App = (() => {
       modalBody.appendChild(removeBtn);
     }
 
+    const searchInput = document.createElement('input');
+    searchInput.type = 'search';
+    searchInput.className = 'modal-search-input';
+    searchInput.placeholder = 'Buscar electiva por código o nombre…';
+    searchInput.setAttribute('aria-label', 'Buscar electiva por código o nombre');
+    modalBody.appendChild(searchInput);
+
+    // Cada grupo recuerda sus filas para poder filtrarlas al escribir en la búsqueda.
+    const searchableGroups = [];
+
     for (const catalog of ELECTIVE_CATALOGS) {
       const group = document.createElement('div');
       group.className = 'modal-group';
@@ -362,7 +399,21 @@ const App = (() => {
 
       const list = document.createElement('div');
       list.className = 'modal-list';
-      for (const subj of catalog.subjects) {
+
+      // Las electivas que ya se pueden cursar (requisitos cumplidos) van primero;
+      // las ya asignadas a otro cupo (no elegibles) quedan al final.
+      const sortedSubjects = [...catalog.subjects].sort((a, b) => {
+        const aOccupied = occupied.has(a.code);
+        const bOccupied = occupied.has(b.code);
+        if (aOccupied !== bOccupied) return aOccupied ? 1 : -1;
+        const aAvailable = getRowState(a.code, a.reqs, ctx) === 'disponible';
+        const bAvailable = getRowState(b.code, b.reqs, ctx) === 'disponible';
+        if (aAvailable !== bAvailable) return aAvailable ? -1 : 1;
+        return 0;
+      });
+
+      const rowsForSearch = [];
+      for (const subj of sortedSubjects) {
         const isOccupiedElsewhere = occupied.has(subj.code);
         const rowState = getRowState(subj.code, subj.reqs, ctx);
         const item = document.createElement('button');
@@ -390,17 +441,37 @@ const App = (() => {
         });
 
         list.appendChild(item);
+        rowsForSearch.push({ el: item, text: (subj.code + ' ' + subj.name).toLowerCase() });
       }
       group.appendChild(list);
       modalBody.appendChild(group);
+      searchableGroups.push({ groupEl: group, rows: rowsForSearch });
     }
 
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.trim().toLowerCase();
+      for (const { groupEl, rows } of searchableGroups) {
+        let anyVisible = false;
+        for (const row of rows) {
+          const matches = !query || row.text.includes(query);
+          row.el.hidden = !matches;
+          if (matches) anyVisible = true;
+        }
+        groupEl.hidden = !anyVisible;
+      }
+    });
+
     modalOverlay.classList.remove('hidden');
+    searchInput.focus();
   }
 
   function closeModal() {
     modalOverlay.classList.add('hidden');
     modalBody.innerHTML = '';
+    if (lastFocusedBeforeModal) {
+      lastFocusedBeforeModal.focus();
+      lastFocusedBeforeModal = null;
+    }
   }
 
   return { init };

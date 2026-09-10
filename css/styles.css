@@ -334,6 +334,17 @@ body {
   gap: 0.4rem;
 }
 
+.legend-note {
+  margin: 0.4rem 0 0;
+  padding-bottom: 0.5rem;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+.legend-note strong {
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
 .swatch {
   display: inline-block;
   width: 0.9rem;
@@ -612,6 +623,27 @@ main {
   overflow-y: auto;
 }
 
+.modal-search-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+.modal-search-input:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
+}
+.modal-search-input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
 .modal-group {
   margin-bottom: 1.25rem;
 }
@@ -689,6 +721,9 @@ main {
   }
   .legend {
     justify-content: center;
+    text-align: center;
+  }
+  .legend-note {
     text-align: center;
   }
 
