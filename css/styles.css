@@ -7,23 +7,23 @@
   --bg: #f8fafc;
   --surface: #ffffff;
   --surface-muted: #f1f5f9;
-  --border: #e2e8f0;
+  --border: #cbd5e1;
   --text: #0f172a;
   --text-muted: #64748b;
   --accent: #4f46e5;
 
-  --color-success: #16a34a;
-  --color-success-bg: #dcfce7;
-  --color-info: #0891b2;
-  --color-info-bg: #cffafe;
+  --color-success: #15803d;
+  --color-success-bg: #bbf7d0;
+  --color-info: #0e7490;
+  --color-info-bg: #a5f3fc;
   --color-danger: #dc2626;
-  --color-danger-bg: #fee2e2;
-  --color-warning: #d97706;
-  --color-warning-bg: #fef3c7;
+  --color-danger-bg: #fecaca;
+  --color-warning: #b45309;
+  --color-warning-bg: #fcd34d;
 
   --header-bg: #0f172a;
   --header-fg: #f8fafc;
-  --border-subtle: #eef1f5;
+  --border-subtle: #e2e8f0;
 
   --font-sans: 'Fira Sans', 'Segoe UI', system-ui, Roboto, Arial, sans-serif;
   --font-mono: 'Fira Code', ui-monospace, 'Consolas', monospace;
@@ -37,19 +37,19 @@
     --bg: #0f172a;
     --surface: #1e293b;
     --surface-muted: #182234;
-    --border: #334155;
+    --border: #47566f;
     --text: #f1f5f9;
     --text-muted: #94a3b8;
     --accent: #818cf8;
 
     --color-success: #4ade80;
-    --color-success-bg: #14291b;
+    --color-success-bg: #1f4d31;
     --color-info: #22d3ee;
-    --color-info-bg: #0e2e36;
+    --color-info-bg: #164e5c;
     --color-danger: #f87171;
-    --color-danger-bg: #3a1616;
+    --color-danger-bg: #5c2323;
     --color-warning: #fbbf24;
-    --color-warning-bg: #3a2c0c;
+    --color-warning-bg: #5c4413;
 
     --header-bg: #020617;
     --header-fg: #f1f5f9;
@@ -62,19 +62,19 @@
   --bg: #0f172a;
   --surface: #1e293b;
   --surface-muted: #182234;
-  --border: #334155;
+  --border: #47566f;
   --text: #f1f5f9;
   --text-muted: #94a3b8;
   --accent: #818cf8;
 
   --color-success: #4ade80;
-  --color-success-bg: #14291b;
+  --color-success-bg: #1f4d31;
   --color-info: #22d3ee;
-  --color-info-bg: #0e2e36;
+  --color-info-bg: #164e5c;
   --color-danger: #f87171;
-  --color-danger-bg: #3a1616;
+  --color-danger-bg: #5c2323;
   --color-warning: #fbbf24;
-  --color-warning-bg: #3a2c0c;
+  --color-warning-bg: #5c4413;
 
   --header-bg: #020617;
   --header-fg: #f1f5f9;
@@ -386,15 +386,9 @@ main {
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
 }
 
-/* Resalta la tarjeta del semestre que se está cursando actualmente
-   (alguna de sus materias marcada como "Cursando"). */
-.card-current {
-  border-color: var(--color-info);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16), 0 6px 16px rgba(0, 0, 0, 0.08);
-}
 
 .card-title {
   margin: 0;
