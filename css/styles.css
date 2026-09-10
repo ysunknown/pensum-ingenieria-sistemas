@@ -226,6 +226,9 @@ body {
 .quicknav-electivas {
   margin-left: 0.5rem;
 }
+.quicknav-text-short {
+  display: none;
+}
 
 /* Que la barra sticky no tape el encabezado de la sección al saltar por ancla. */
 .card[id],
@@ -673,12 +676,85 @@ main {
 }
 
 @media (max-width: 640px) {
+  /* ---- Header centrado ---- */
+
   .app-header-inner {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
   }
   .counters {
     width: 100%;
+    justify-content: center;
+  }
+  .legend {
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Reserva un carril a la derecha en toda la página para que el riel de
+     navegación fijo nunca tape texto o controles detrás de él. */
+  .app-header,
+  main,
+  .app-footer {
+    padding-right: 3.4rem;
+  }
+
+  /* ---- Navegación rápida: riel vertical fijo a la derecha ---- */
+
+  .quicknav {
+    position: fixed;
+    top: 50%;
+    right: 0.5rem;
+    left: auto;
+    bottom: auto;
+    transform: translateY(-50%);
+    flex-direction: column;
+    align-items: center;
+    width: auto;
+    max-height: 82vh;
+    overflow-x: visible;
+    overflow-y: auto;
+    padding: 0.35rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+    z-index: 15;
+  }
+  .quicknav a {
+    flex-shrink: 0;
+    width: 2rem;
+    min-width: 2rem;
+    height: 2rem;
+    min-height: 2rem;
+    padding: 0;
+    font-size: 0.68rem;
+  }
+  .quicknav-electivas {
+    margin-left: 0;
+    margin-top: 0.3rem;
+  }
+  .quicknav-text-full {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .quicknav-text-short {
+    display: inline;
+    font-size: 0.6rem;
+    font-weight: 700;
+  }
+
+  /* El riel ya no ocupa el borde superior del contenido: no hace falta
+     reservarle espacio al saltar por ancla. */
+  .card[id],
+  #electivas {
+    scroll-margin-top: 1rem;
   }
 
   /* ---- Vista de tarjeta por materia (en vez de tabla) ---- */
