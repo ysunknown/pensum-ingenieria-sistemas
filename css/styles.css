@@ -146,6 +146,7 @@ main {
 .section-title {
   font-size: 1.1rem;
   color: var(--text);
+  text-align: center;
   margin: 2rem 0 1rem;
 }
 
