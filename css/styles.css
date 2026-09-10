@@ -154,6 +154,9 @@ main {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 1rem;
+  /* Este contenedor se reconstruye por completo en cada render; excluirlo de
+     scroll anchoring evita que el navegador salte a un punto impredecible. */
+  overflow-anchor: none;
 }
 
 /* Semestres apilados en una sola columna, en orden I a X. */

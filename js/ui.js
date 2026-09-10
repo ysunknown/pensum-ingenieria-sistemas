@@ -41,12 +41,19 @@ const App = (() => {
   }
 
   function renderAll() {
+    // Recordar la posición de scroll: reconstruir todo el árbol de tarjetas puede
+    // hacer que el navegador reancle el scroll a un punto arbitrario (scroll
+    // anchoring) al desaparecer el nodo que estaba usando como referencia.
+    const scrollY = window.scrollY;
+
     index = buildSubjectIndex(state.slots);
     const ctx = buildContext(state.status, index, state.slots);
 
     renderCounters(ctx);
     renderSemesters(ctx);
     renderElectiveCatalogs(ctx);
+
+    window.scrollTo(0, scrollY);
   }
 
   function renderCounters(ctx) {
