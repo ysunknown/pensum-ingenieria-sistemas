@@ -81,7 +81,7 @@ const App = (() => {
 
     const table = document.createElement('table');
     table.className = 'subjects-table';
-    table.appendChild(createTableHead(true));
+    table.appendChild(createTableHead());
 
     const tbody = document.createElement('tbody');
     let totalUC = 0;
@@ -98,7 +98,7 @@ const App = (() => {
     tdLabel.className = 'foot-label';
     tdLabel.textContent = 'TOTAL U.C.';
     const tdVal = document.createElement('td');
-    tdVal.colSpan = 3;
+    tdVal.colSpan = 1;
     tdVal.className = 'foot-value';
     tdVal.textContent = totalUC;
     trFoot.appendChild(tdLabel);
@@ -110,11 +110,10 @@ const App = (() => {
     return card;
   }
 
-  function createTableHead(withPorCursar) {
+  function createTableHead() {
     const thead = document.createElement('thead');
     const tr = document.createElement('tr');
-    const cols = ['Código', 'Asignatura', 'UC', 'Requisitos', 'Aprobado', 'Cursando'];
-    if (withPorCursar) cols.push('Por cursar');
+    const cols = ['Código', 'Asignatura', 'UC', 'Requisitos', 'Estado'];
     for (const c of cols) {
       const th = document.createElement('th');
       th.textContent = c;
@@ -124,16 +123,23 @@ const App = (() => {
     return thead;
   }
 
+  const STATUS_OPTIONS_FULL = [
+    { value: STATUS.APROBADA, label: 'Aprobada', cssName: 'aprobada' },
+    { value: STATUS.CURSANDO, label: 'Cursando', cssName: 'cursando' },
+    { value: STATUS.POR_CURSAR, label: 'Por cursar', cssName: 'porcursar' },
+  ];
+  const STATUS_OPTIONS_CATALOG = STATUS_OPTIONS_FULL.slice(0, 2);
+
   function createSubjectRow(subj, ctx, withPorCursar, semLabel) {
     const tr = document.createElement('tr');
 
     if (subj.isElective) {
       const assignedCode = state.slots[subj.slotId];
       if (!assignedCode) {
-        return createEmptyElectiveRow(subj, semLabel, withPorCursar);
+        return createEmptyElectiveRow(subj, semLabel);
       }
       const real = index[assignedCode];
-      return createResolvedElectiveRow(subj, real, ctx, semLabel, withPorCursar);
+      return createResolvedElectiveRow(subj, real, ctx, semLabel);
     }
 
     const rowState = getRowState(subj.code, subj.reqs, ctx);
@@ -143,14 +149,12 @@ const App = (() => {
     tr.appendChild(td(nameWithIcon(rowState, subj.name), 'name-cell'));
     tr.appendChild(td(subj.uc));
     tr.appendChild(td(subj.reqText || '—'));
-    tr.appendChild(td(checkbox(subj.code, STATUS.APROBADA)));
-    tr.appendChild(td(checkbox(subj.code, STATUS.CURSANDO)));
-    if (withPorCursar) tr.appendChild(td(checkbox(subj.code, STATUS.POR_CURSAR)));
+    tr.appendChild(td(segmentedControl(subj.code, STATUS_OPTIONS_FULL), 'segmented-cell'));
 
     return tr;
   }
 
-  function createEmptyElectiveRow(subj, semLabel, withPorCursar) {
+  function createEmptyElectiveRow(subj, semLabel) {
     const tr = document.createElement('tr');
     tr.className = 'row-electiva-vacia';
     tr.appendChild(td('—'));
@@ -167,13 +171,11 @@ const App = (() => {
 
     tr.appendChild(td(subj.uc));
     tr.appendChild(td('—'));
-    tr.appendChild(td('', 'checkbox-cell'));
-    tr.appendChild(td('', 'checkbox-cell'));
-    if (withPorCursar) tr.appendChild(td('', 'checkbox-cell'));
+    tr.appendChild(td('', 'segmented-cell'));
     return tr;
   }
 
-  function createResolvedElectiveRow(subj, real, ctx, semLabel, withPorCursar) {
+  function createResolvedElectiveRow(subj, real, ctx, semLabel) {
     const tr = document.createElement('tr');
     const rowState = getRowState(real.code, real.reqs, ctx);
     tr.className = rowClass(rowState);
@@ -193,9 +195,7 @@ const App = (() => {
 
     tr.appendChild(td(real.uc));
     tr.appendChild(td(real.reqText || '—'));
-    tr.appendChild(td(checkbox(real.code, STATUS.APROBADA)));
-    tr.appendChild(td(checkbox(real.code, STATUS.CURSANDO)));
-    if (withPorCursar) tr.appendChild(td(checkbox(real.code, STATUS.POR_CURSAR)));
+    tr.appendChild(td(segmentedControl(real.code, STATUS_OPTIONS_FULL), 'segmented-cell'));
 
     return tr;
   }
@@ -236,16 +236,27 @@ const App = (() => {
     return cell;
   }
 
-  function checkbox(code, statusValue) {
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.checked = state.status[code] === statusValue;
-    input.addEventListener('change', () => {
-      const next = input.checked ? statusValue : STATUS.NONE;
-      setSubjectStatus(state, code, next);
-      renderAll();
-    });
-    return input;
+  function segmentedControl(code, options) {
+    const group = document.createElement('div');
+    group.className = 'segmented';
+    group.setAttribute('role', 'group');
+    group.setAttribute('aria-label', 'Estado de la materia');
+
+    for (const opt of options) {
+      const isActive = state.status[code] === opt.value;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'segmented-option segmented-' + opt.cssName + (isActive ? ' active' : '');
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      btn.textContent = opt.label;
+      btn.addEventListener('click', () => {
+        const next = isActive ? STATUS.NONE : opt.value;
+        setSubjectStatus(state, code, next);
+        renderAll();
+      });
+      group.appendChild(btn);
+    }
+    return group;
   }
 
   // ---------- Catálogos de electivas ----------
@@ -268,7 +279,7 @@ const App = (() => {
 
     const table = document.createElement('table');
     table.className = 'subjects-table';
-    table.appendChild(createTableHead(false));
+    table.appendChild(createTableHead());
 
     const tbody = document.createElement('tbody');
     for (const subj of catalog.subjects) {
@@ -279,8 +290,7 @@ const App = (() => {
       tr.appendChild(td(nameWithIcon(rowState, subj.name), 'name-cell'));
       tr.appendChild(td(subj.uc));
       tr.appendChild(td(subj.reqText || '—'));
-      tr.appendChild(td(checkbox(subj.code, STATUS.APROBADA)));
-      tr.appendChild(td(checkbox(subj.code, STATUS.CURSANDO)));
+      tr.appendChild(td(segmentedControl(subj.code, STATUS_OPTIONS_CATALOG), 'segmented-cell'));
       tbody.appendChild(tr);
     }
     table.appendChild(tbody);
