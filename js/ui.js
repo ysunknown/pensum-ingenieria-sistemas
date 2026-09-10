@@ -140,7 +140,7 @@ const App = (() => {
     tr.className = rowClass(rowState);
 
     tr.appendChild(td(subj.code));
-    tr.appendChild(td(subj.name, 'name-cell'));
+    tr.appendChild(td(nameWithIcon(rowState, subj.name), 'name-cell'));
     tr.appendChild(td(subj.uc));
     tr.appendChild(td(subj.reqText || '—'));
     tr.appendChild(td(checkbox(subj.code, STATUS.APROBADA)));
@@ -182,9 +182,7 @@ const App = (() => {
 
     const tdName = document.createElement('td');
     tdName.className = 'name-cell';
-    const span = document.createElement('span');
-    span.textContent = real.name;
-    tdName.appendChild(span);
+    tdName.appendChild(nameWithIcon(rowState, real.name));
     const changeBtn = document.createElement('button');
     changeBtn.type = 'button';
     changeBtn.className = 'btn-cambiar';
@@ -210,6 +208,24 @@ const App = (() => {
       case 'disponible': return 'row-disponible';
       default: return 'row-bloqueada';
     }
+  }
+
+  function nameWithIcon(rowState, name) {
+    const wrap = document.createElement('span');
+    wrap.className = 'name-with-icon';
+    const icon = createStatusIcon(rowState);
+    if (icon) {
+      icon.setAttribute('role', 'img');
+      const titleEl = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+      titleEl.textContent = STATUS_ICON_PATHS[rowState].title;
+      icon.insertBefore(titleEl, icon.firstChild);
+      icon.removeAttribute('aria-hidden');
+      wrap.appendChild(icon);
+    }
+    const label = document.createElement('span');
+    label.textContent = name;
+    wrap.appendChild(label);
+    return wrap;
   }
 
   function td(content, className) {
@@ -260,7 +276,7 @@ const App = (() => {
       const tr = document.createElement('tr');
       tr.className = rowClass(rowState);
       tr.appendChild(td(subj.code));
-      tr.appendChild(td(subj.name, 'name-cell'));
+      tr.appendChild(td(nameWithIcon(rowState, subj.name), 'name-cell'));
       tr.appendChild(td(subj.uc));
       tr.appendChild(td(subj.reqText || '—'));
       tr.appendChild(td(checkbox(subj.code, STATUS.APROBADA)));

@@ -24,6 +24,41 @@
   box-sizing: border-box;
 }
 
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Estados de foco visibles para navegación por teclado, sobre cualquier fondo. */
+button:focus-visible,
+a:focus-visible,
+input[type='checkbox']:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Transiciones cortas y consistentes; se desactivan si el usuario prefiere menos movimiento. */
+.subjects-table tbody tr,
+.card,
+.btn-elegir,
+.btn-cambiar,
+.btn-quitar,
+.btn-reset,
+.modal-item {
+  transition: background-color 200ms ease, filter 200ms ease, border-color 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+    animation: none !important;
+  }
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Roboto, Arial, sans-serif;
@@ -209,9 +244,28 @@ main {
   vertical-align: middle;
 }
 
+.subjects-table tbody tr:hover {
+  filter: brightness(0.97);
+}
+
 .subjects-table .name-cell {
   min-width: 160px;
 }
+
+.name-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.status-icon {
+  flex-shrink: 0;
+}
+.status-icon-aprobada { color: var(--color-aprobada-border); }
+.status-icon-cursando { color: var(--color-cursando-border); }
+.status-icon-porcursar,
+.status-icon-porCursar { color: var(--color-porcursar-border); }
+.status-icon-disponible { color: var(--color-disponible-border); }
 
 .checkbox-cell {
   text-align: center;
