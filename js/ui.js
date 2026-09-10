@@ -112,11 +112,15 @@ const App = (() => {
 
     const tbody = document.createElement('tbody');
     let totalUC = 0;
+    let hasCursando = false;
     for (const subj of sem.subjects) {
       totalUC += subj.uc;
-      tbody.appendChild(createSubjectRow(subj, ctx, true, sem.romano));
+      const code = subj.isElective ? state.slots[subj.slotId] : subj.code;
+      if (code && state.status[code] === STATUS.CURSANDO) hasCursando = true;
+      tbody.appendChild(createSubjectRow(subj, ctx, sem.romano));
     }
     table.appendChild(tbody);
+    if (hasCursando) card.classList.add('card-current');
 
     const tfoot = document.createElement('tfoot');
     const trFoot = document.createElement('tr');
@@ -157,7 +161,7 @@ const App = (() => {
   ];
   const STATUS_OPTIONS_CATALOG = STATUS_OPTIONS_FULL.slice(0, 2);
 
-  function createSubjectRow(subj, ctx, withPorCursar, semLabel) {
+  function createSubjectRow(subj, ctx, semLabel) {
     const tr = document.createElement('tr');
 
     if (subj.isElective) {
@@ -172,11 +176,11 @@ const App = (() => {
     const rowState = getRowState(subj.code, subj.reqs, ctx);
     tr.className = rowClass(rowState);
 
-    tr.appendChild(td(subj.code));
+    tr.appendChild(td(subj.code, null, 'Código'));
     tr.appendChild(td(nameWithIcon(rowState, subj.name), 'name-cell'));
-    tr.appendChild(td(subj.uc));
-    tr.appendChild(td(subj.reqText || '—'));
-    tr.appendChild(td(segmentedControl(subj.code, STATUS_OPTIONS_FULL), 'segmented-cell'));
+    tr.appendChild(td(subj.uc, null, 'UC'));
+    tr.appendChild(td(subj.reqText || '—', null, 'Requisitos'));
+    tr.appendChild(td(segmentedControl(subj.code, STATUS_OPTIONS_FULL), 'segmented-cell', 'Estado'));
 
     return tr;
   }
@@ -184,7 +188,7 @@ const App = (() => {
   function createEmptyElectiveRow(subj, semLabel) {
     const tr = document.createElement('tr');
     tr.className = 'row-electiva-vacia';
-    tr.appendChild(td('—'));
+    tr.appendChild(td('—', null, 'Código'));
 
     const tdName = document.createElement('td');
     tdName.className = 'name-cell';
@@ -196,9 +200,9 @@ const App = (() => {
     tdName.appendChild(btn);
     tr.appendChild(tdName);
 
-    tr.appendChild(td(subj.uc));
-    tr.appendChild(td('—'));
-    tr.appendChild(td('', 'segmented-cell'));
+    tr.appendChild(td(subj.uc, null, 'UC'));
+    tr.appendChild(td('—', null, 'Requisitos'));
+    tr.appendChild(td('', 'segmented-cell', 'Estado'));
     return tr;
   }
 
@@ -207,7 +211,7 @@ const App = (() => {
     const rowState = getRowState(real.code, real.reqs, ctx);
     tr.className = rowClass(rowState);
 
-    tr.appendChild(td(real.code));
+    tr.appendChild(td(real.code, null, 'Código'));
 
     const tdName = document.createElement('td');
     tdName.className = 'name-cell';
@@ -220,9 +224,9 @@ const App = (() => {
     tdName.appendChild(changeBtn);
     tr.appendChild(tdName);
 
-    tr.appendChild(td(real.uc));
-    tr.appendChild(td(real.reqText || '—'));
-    tr.appendChild(td(segmentedControl(real.code, STATUS_OPTIONS_FULL), 'segmented-cell'));
+    tr.appendChild(td(real.uc, null, 'UC'));
+    tr.appendChild(td(real.reqText || '—', null, 'Requisitos'));
+    tr.appendChild(td(segmentedControl(real.code, STATUS_OPTIONS_FULL), 'segmented-cell', 'Estado'));
 
     return tr;
   }
@@ -255,9 +259,10 @@ const App = (() => {
     return wrap;
   }
 
-  function td(content, className) {
+  function td(content, className, label) {
     const cell = document.createElement('td');
     if (className) cell.className = className;
+    if (label) cell.setAttribute('data-label', label);
     if (content instanceof Node) cell.appendChild(content);
     else cell.textContent = content;
     return cell;
@@ -313,11 +318,11 @@ const App = (() => {
       const rowState = getRowState(subj.code, subj.reqs, ctx);
       const tr = document.createElement('tr');
       tr.className = rowClass(rowState);
-      tr.appendChild(td(subj.code));
+      tr.appendChild(td(subj.code, null, 'Código'));
       tr.appendChild(td(nameWithIcon(rowState, subj.name), 'name-cell'));
-      tr.appendChild(td(subj.uc));
-      tr.appendChild(td(subj.reqText || '—'));
-      tr.appendChild(td(segmentedControl(subj.code, STATUS_OPTIONS_CATALOG), 'segmented-cell'));
+      tr.appendChild(td(subj.uc, null, 'UC'));
+      tr.appendChild(td(subj.reqText || '—', null, 'Requisitos'));
+      tr.appendChild(td(segmentedControl(subj.code, STATUS_OPTIONS_CATALOG), 'segmented-cell', 'Estado'));
       tbody.appendChild(tr);
     }
     table.appendChild(tbody);
