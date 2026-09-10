@@ -59,11 +59,61 @@ input[type='checkbox']:focus-visible {
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Roboto, Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
+}
+
+/* ---------- Navegación rápida (sticky) ---------- */
+
+.quicknav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  gap: 0.3rem;
+  overflow-x: auto;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+}
+
+.quicknav a {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  background: var(--bg);
+}
+.quicknav a:hover {
+  background: #e5e7eb;
+}
+.quicknav a.active {
+  background: var(--accent);
+  color: #fff;
+}
+.quicknav-electivas {
+  margin-left: 0.5rem;
+}
+
+/* Que la barra sticky no tape el encabezado de la sección al saltar por ancla. */
+.card[id],
+#electivas {
+  scroll-margin-top: 4.5rem;
 }
 
 /* ---------- Header ---------- */

@@ -6,6 +6,7 @@
 const App = (() => {
   let state = null;
   let index = null; // code -> subject, recalculado cuando cambian los cupos de electiva
+  let scrollSpyObserver = null;
 
   const elSemestres = document.getElementById('semestres');
   const elElectivas = document.getElementById('electivas-catalogos');
@@ -52,8 +53,33 @@ const App = (() => {
     renderCounters(ctx);
     renderSemesters(ctx);
     renderElectiveCatalogs(ctx);
+    setupScrollSpy();
 
     window.scrollTo(0, scrollY);
+  }
+
+  // ---------- Navegación rápida (scrollspy) ----------
+
+  function setupScrollSpy() {
+    if (scrollSpyObserver) scrollSpyObserver.disconnect();
+
+    const quicknav = document.getElementById('quicknav');
+    if (!quicknav || typeof IntersectionObserver === 'undefined') return;
+
+    const sections = [...document.querySelectorAll('[id^="semestre-"], #electivas')];
+    const linkFor = (id) => quicknav.querySelector(`a[href="#${id}"]`);
+
+    scrollSpyObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const link = linkFor(entry.target.id);
+          if (link) link.classList.toggle('active', entry.isIntersecting);
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' }
+    );
+
+    for (const section of sections) scrollSpyObserver.observe(section);
   }
 
   function renderCounters(ctx) {
@@ -73,6 +99,7 @@ const App = (() => {
   function createSemesterCard(sem, ctx) {
     const card = document.createElement('section');
     card.className = 'card';
+    card.id = 'semestre-' + sem.romano;
 
     const header = document.createElement('h2');
     header.className = 'card-title';
