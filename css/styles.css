@@ -1,16 +1,18 @@
 :root {
   color-scheme: light;
   /* ---- Tokens semánticos (tema claro) ---- */
-  /* Dashboard plano y minimalista: superficies neutras, un único acento
-     índigo para lo interactivo, y colores de estado con nombre propio
-     (el "cursando" ya no es un azul casi igual al de acento). */
+  /* Dashboard plano y minimalista, con la identidad institucional de UNEXPO:
+     azul institucional como acento único para lo interactivo, un dorado
+     puntual para los detalles decorativos, y colores de estado con nombre
+     propio (el "cursando" ya no es un azul casi igual al de acento). */
   --bg: #f8fafc;
   --surface: #ffffff;
   --surface-muted: #f1f5f9;
   --border: #cbd5e1;
   --text: #0f172a;
   --text-muted: #64748b;
-  --accent: #4f46e5;
+  --accent: #253589;
+  --accent-gold: #c8960c;
 
   --color-success: #15803d;
   --color-success-bg: #bbf7d0;
@@ -21,7 +23,9 @@
   --color-warning: #d97706;
   --color-warning-bg: #fef3c7;
 
-  --header-bg: #0f172a;
+  --header-bg: #253589;
+  --header-bg-start: #16215e;
+  --header-bg-end: #34469e;
   --header-fg: #f8fafc;
   --border-subtle: #e2e8f0;
 
@@ -40,7 +44,8 @@
     --border: #47566f;
     --text: #f1f5f9;
     --text-muted: #94a3b8;
-    --accent: #818cf8;
+    --accent: #8fa8f5;
+    --accent-gold: #e0b23d;
 
     --color-success: #4ade80;
     --color-success-bg: #1f4d31;
@@ -51,7 +56,9 @@
     --color-warning: #fbbf24;
     --color-warning-bg: #3a2c0c;
 
-    --header-bg: #020617;
+    --header-bg: #0a0f26;
+    --header-bg-start: #05081c;
+    --header-bg-end: #121b42;
     --header-fg: #f1f5f9;
     --border-subtle: #263349;
   }
@@ -65,7 +72,8 @@
   --border: #47566f;
   --text: #f1f5f9;
   --text-muted: #94a3b8;
-  --accent: #818cf8;
+  --accent: #8fa8f5;
+  --accent-gold: #e0b23d;
 
   --color-success: #4ade80;
   --color-success-bg: #1f4d31;
@@ -76,7 +84,9 @@
   --color-warning: #fbbf24;
   --color-warning-bg: #3a2c0c;
 
-  --header-bg: #020617;
+  --header-bg: #0a0f26;
+  --header-bg-start: #05081c;
+  --header-bg-end: #121b42;
   --header-fg: #f1f5f9;
   --border-subtle: #263349;
 }
@@ -321,9 +331,10 @@ body {
 /* ---------- Header ---------- */
 
 .app-header {
-  background: var(--header-bg);
+  background: linear-gradient(120deg, var(--header-bg-start) 0%, var(--header-bg-end) 100%);
   color: var(--header-fg);
   padding: 1.25rem 1.5rem 0.75rem;
+  border-bottom: 3px solid var(--accent-gold);
 }
 
 .app-header-inner {
@@ -507,10 +518,13 @@ main {
 }
 
 .section-title {
+  display: table;
+  margin: 2rem auto 1rem;
+  padding-bottom: 0.4rem;
   font-size: 1.1rem;
   color: var(--text);
   text-align: center;
-  margin: 2rem 0 1rem;
+  border-bottom: 2px solid var(--accent-gold);
 }
 
 .grid-cards {
